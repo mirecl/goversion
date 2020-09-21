@@ -19,7 +19,7 @@ func NewLumberjack(path string, opts ...FileOption) (io.Writer, error) {
 }
 
 func (fo *fileOptions) Write(p []byte) (n int, err error) {
-	fmt.Println(fo.version, fo.size)
+	fmt.Println(fo)
 	return 0, nil
 }
 
