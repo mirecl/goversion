@@ -21,8 +21,10 @@ func NewLumberjack(filename string, opts ...FileOption) (io.Writer, error) {
 
 func (fo *fileOptions) Write(p []byte) (n int, err error) {
 	fmt.Println(fo)
-	fo.file.Write([]byte("test"))
-	return 0, nil
+	if fo.file == nil {
+		fo.openExistingOrNew()
+	}
+	return fo.file.Write(p)
 }
 
 type fileOptions struct {
@@ -33,7 +35,7 @@ type fileOptions struct {
 	file     *os.File
 }
 
-func (fo *fileOptions) openExistingOrNew(writeLen int) error {
+func (fo *fileOptions) openExistingOrNew() error {
 	info, err := os.Stat(fo.filename)
 	if os.IsNotExist(err) {
 		return fo.openNew()
