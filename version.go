@@ -6,8 +6,8 @@ import (
 	"os"
 )
 
-// NewLumberjack logger file.
-func NewLumberjack(filename string, opts ...FileOption) (io.Writer, error) {
+// New logger file.
+func New(filename string, opts ...FileOption) (io.Writer, error) {
 	fo := &fileOptions{
 		filename: filename,
 		version:  "null",
