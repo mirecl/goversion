@@ -64,8 +64,8 @@ func WithBufferSize(size int) FileOption {
 }
 
 // WithBackup set backup.
-func WithBackup(backup bool) FileOption {
+func WithBackup() FileOption {
 	return newFuncFileOption(func(o *fileOptions) {
-		o.backup = backup
+		o.backup = true
 	})
 }
