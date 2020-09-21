@@ -24,6 +24,9 @@ func (fo *fileOptions) Write(p []byte) (n int, err error) {
 	if fo.file == nil {
 		fo.openExistingOrNew()
 	}
+	if fo.f != nil {
+		fo.f()
+	}
 	return fo.file.Write(p)
 }
 
@@ -33,6 +36,7 @@ type fileOptions struct {
 	size     int64
 	backup   bool
 	file     *os.File
+	f        func()
 }
 
 func (fo *fileOptions) openExistingOrNew() error {
@@ -100,5 +104,12 @@ func WithBufferSize(size int64) FileOption {
 func WithBackup() FileOption {
 	return newFuncFileOption(func(o *fileOptions) {
 		o.backup = true
+	})
+}
+
+// WithCallBack ...
+func WithCallBack(f func()) FileOption {
+	return newFuncFileOption(func(o *fileOptions) {
+		o.f = f
 	})
 }
