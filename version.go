@@ -4,5 +4,5 @@ import "fmt"
 
 // Version apps.
 func Version() {
-	fmt.Println("v1.0.0")
+	fmt.Println("v1.0.1")
 }
