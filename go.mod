@@ -1,3 +1,3 @@
-module gopkg.in/mirecl/goversion.v2
+module gopkg.in/mirecl/goversion.v3
 
 go 1.14
