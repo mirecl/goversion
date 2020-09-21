@@ -27,6 +27,7 @@ type fileOptions struct {
 	path    string
 	version string
 	size    int
+	backup  bool
 }
 
 // FileOption configures file.
@@ -59,5 +60,12 @@ func WithVersion(version string) FileOption {
 func WithBufferSize(size int) FileOption {
 	return newFuncFileOption(func(o *fileOptions) {
 		o.size = size
+	})
+}
+
+// WithBackup set backup.
+func WithBackup(backup bool) FileOption {
+	return newFuncFileOption(func(o *fileOptions) {
+		o.backup = backup
 	})
 }
