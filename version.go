@@ -19,13 +19,14 @@ func NewLumberjack(path string, opts ...FileOption) (io.Writer, error) {
 }
 
 func (fo *fileOptions) Write(p []byte) (n int, err error) {
-	fmt.Println(fo.version)
+	fmt.Println(fo.version, fo.size)
 	return 0, nil
 }
 
 type fileOptions struct {
 	path    string
 	version string
+	size    int
 }
 
 // FileOption configures file.
@@ -51,5 +52,12 @@ func newFuncFileOption(f func(*fileOptions)) *funcFileOption {
 func WithVersion(version string) FileOption {
 	return newFuncFileOption(func(o *fileOptions) {
 		o.version = version
+	})
+}
+
+// WithBufferSize set buffer size.
+func WithBufferSize(size int) FileOption {
+	return newFuncFileOption(func(o *fileOptions) {
+		o.size = size
 	})
 }
