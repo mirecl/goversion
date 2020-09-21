@@ -6,6 +6,15 @@ import (
 	"os"
 )
 
+const (
+	// KB ...
+	KB = 1024 << (10 * iota)
+	// MB ...
+	MB
+	// GB ...
+	GB
+)
+
 // New logger file.
 func New(filename string, opts ...FileOption) (io.Writer, error) {
 	fo := &fileOptions{
