@@ -3,13 +3,14 @@ package goversion
 import (
 	"fmt"
 	"io"
+	"os"
 )
 
 // NewLumberjack logger file.
-func NewLumberjack(path string, opts ...FileOption) (io.Writer, error) {
+func NewLumberjack(filename string, opts ...FileOption) (io.Writer, error) {
 	fo := &fileOptions{
-		path:    path,
-		version: "null",
+		filename: filename,
+		version:  "null",
 	}
 
 	for _, opt := range opts {
@@ -20,14 +21,44 @@ func NewLumberjack(path string, opts ...FileOption) (io.Writer, error) {
 
 func (fo *fileOptions) Write(p []byte) (n int, err error) {
 	fmt.Println(fo)
+	fo.file.Write([]byte("test"))
 	return 0, nil
 }
 
 type fileOptions struct {
-	path    string
-	version string
-	size    int
-	backup  bool
+	filename string
+	version  string
+	size     int64
+	backup   bool
+	file     *os.File
+}
+
+func (fo *fileOptions) openExistingOrNew(writeLen int) error {
+	info, err := os.Stat(fo.filename)
+	if os.IsNotExist(err) {
+		return fo.openNew()
+	}
+
+	file, err := os.OpenFile(fo.filename, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		return fo.openNew()
+	}
+
+	fo.file = file
+	fo.size = info.Size()
+	return nil
+}
+
+func (fo *fileOptions) openNew() error {
+	name := fo.filename
+	mode := os.FileMode(0600)
+	f, err := os.OpenFile(name, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, mode)
+	if err != nil {
+		return fmt.Errorf("can't open new logfile: %s", err)
+	}
+	fo.file = f
+	fo.size = 0
+	return nil
 }
 
 // FileOption configures file.
@@ -57,7 +88,7 @@ func WithVersion(version string) FileOption {
 }
 
 // WithBufferSize set buffer size.
-func WithBufferSize(size int) FileOption {
+func WithBufferSize(size int64) FileOption {
 	return newFuncFileOption(func(o *fileOptions) {
 		o.size = size
 	})
